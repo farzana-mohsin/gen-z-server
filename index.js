@@ -47,6 +47,14 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/products-by-price", async (req, res) => {
+      const limit = parseInt(req.query.limit);
+
+      const cursor = productsCollection.find().sort({ price: 1 }).limit(limit);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
