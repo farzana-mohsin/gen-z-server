@@ -62,6 +62,16 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+    app.get("/products-by-date-added", async (req, res) => {
+      const limit = parseInt(req.query.limit);
+
+      const cursor = productsCollection
+        .find()
+        .sort({ productCreationDate: -1 })
+        .limit(limit);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
