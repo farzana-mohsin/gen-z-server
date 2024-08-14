@@ -47,10 +47,18 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/products-by-price", async (req, res) => {
+    app.get("/products-by-price-ascend", async (req, res) => {
       const limit = parseInt(req.query.limit);
 
       const cursor = productsCollection.find().sort({ price: 1 }).limit(limit);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.get("/products-by-price-descend", async (req, res) => {
+      const limit = parseInt(req.query.limit);
+
+      const cursor = productsCollection.find().sort({ price: -1 }).limit(limit);
       const result = await cursor.toArray();
       res.send(result);
     });
