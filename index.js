@@ -88,6 +88,31 @@ async function run() {
       res.send(result);
     });
 
+    app.post("/categorize-products", async (req, res) => {
+      const category = req.body.category;
+      const minPrice = req.body.minPrice;
+      const maxPrice = req.body.maxPrice;
+
+      let query = {
+        price: { $gte: minPrice, $lte: maxPrice },
+        category: { $eq: category },
+      };
+
+      if (!minPrice && !maxPrice) {
+        query = {
+          category: { $eq: category },
+        };
+      }
+      if (!category) {
+        query = {
+          price: { $gte: minPrice, $lte: maxPrice },
+        };
+      }
+
+      const result = await productsCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
