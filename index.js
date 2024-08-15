@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const assert = require("assert");
 const port = process.env.PORT || 5000;
 
 // middleware
@@ -70,6 +71,20 @@ async function run() {
         .sort({ productCreationDate: -1 })
         .limit(limit);
       const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.post("/product-name", async (req, res) => {
+      const searchString = req.body.key;
+
+      const query = {
+        productName: {
+          $regex: searchString,
+          $options: "i",
+        },
+      };
+
+      const result = await productsCollection.find(query).toArray();
       res.send(result);
     });
 
