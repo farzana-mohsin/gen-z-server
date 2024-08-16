@@ -88,22 +88,29 @@ async function run() {
       res.send(result);
     });
 
-    app.post("/categorize-products", async (req, res) => {
+    app.post("/filter-products", async (req, res) => {
       const category = req.body.category;
+      const brandName = req.body.brandName;
       const minPrice = req.body.minPrice;
       const maxPrice = req.body.maxPrice;
 
       let query = {
         price: { $gte: minPrice, $lte: maxPrice },
         category: { $eq: category },
+        brandName: { $eq: brandName },
       };
 
-      if (!minPrice && !maxPrice) {
+      if (!category && !!brandName) {
+        query = {
+          brandName: { $eq: brandName },
+          price: { $gte: minPrice, $lte: maxPrice },
+        };
+      } else if (!!category && !brandName) {
         query = {
           category: { $eq: category },
+          price: { $gte: minPrice, $lte: maxPrice },
         };
-      }
-      if (!category) {
+      } else if (!category && !brandName) {
         query = {
           price: { $gte: minPrice, $lte: maxPrice },
         };
